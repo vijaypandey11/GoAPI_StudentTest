@@ -1,0 +1,394 @@
+---
+swagger: "2.0"
+info:
+  description: "Student Test Rest API using Swagger"
+  version: "1.0.0"
+  title: "Student Swagger"
+  contact:
+    email: "vijay.pandey1@globallogic.com"
+host: "localhost:1111"
+basePath: "/getStudentDetails"
+tags:
+- name: "student"
+  description: "Student Details"
+- name: "class"
+  description: "Class of Students"
+schemes:
+- "https"
+- "http"
+paths:
+  /student:
+    post:
+      tags:
+      - "student"
+      summary: "Add a new student to the class"
+      operationId: "addStudent"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Student object that needs to be added to the class"
+        required: true
+        schema:
+          $ref: "#/definitions/student"
+        x-exportParamName: "Body"
+      responses:
+        405:
+          description: "Invalid input"
+    put:
+      tags:
+      - "student"
+      summary: "Update an existing student"
+      description: ""
+      operationId: "updateStudent"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Student object that needs to be updated in the class"
+        required: true
+        schema:
+          $ref: "#/definitions/student"
+        x-exportParamName: "Body"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Student not found"
+        405:
+          description: "Validation exception"
+  /student/findByStatus:
+    get:
+      tags:
+      - "student"
+      summary: "Finds students by status"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "findStudentsByStatus"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "status"
+        in: "query"
+        description: "Status values that need to be considered for filter"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+          default: "pass"
+          enum:
+          - "pass"
+          - "fail"
+        collectionFormat: "multi"
+        x-exportParamName: "Status"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/student"
+        400:
+          description: "Invalid status value"
+  /student/findByName:
+    get:
+      tags:
+      - "student"
+      summary: "Finds students by name"
+      description: "Single name must be provided to search student by name"
+      operationId: "findStudentsByName"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "query"
+        description: "Name value that need to be considered for filter"
+        required: true
+        type: "string"
+        x-exportParamName: "Name"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/student"
+        400:
+          description: "Invalid name value"
+  /student/findByAge:
+    get:
+      tags:
+      - "student"
+      summary: "Finds students by age"
+      description: "Age in number must be provided to search student by age"
+      operationId: "findStudentsByAge"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "age"
+        in: "query"
+        description: "Age value that need to be considered for filter"
+        required: true
+        type: "integer"
+        x-exportParamName: "Age"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/student"
+        400:
+          description: "Invalid age value"
+  /student/{id}:
+    get:
+      tags:
+      - "student"
+      summary: "Find student by ID"
+      description: "Returns a single student"
+      operationId: "getStudentById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of student to return"
+        required: true
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Id"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/student"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Student not found"
+      security:
+      - api_key: []
+    post:
+      tags:
+      - "student"
+      summary: "Updates a student in the class with form data"
+      description: ""
+      operationId: "updateStudentById"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of student that needs to be updated"
+        required: true
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Id"
+      - name: "name"
+        in: "formData"
+        description: "Updated name of the student"
+        required: false
+        type: "string"
+        x-exportParamName: "Name"
+        x-optionalDataType: "String"
+      - name: "age"
+        in: "formData"
+        description: "Updated age of the student"
+        required: false
+        type: "string"
+        x-exportParamName: "Age"
+        x-optionalDataType: "String"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+    delete:
+      tags:
+      - "student"
+      summary: "Deletes a student"
+      description: ""
+      operationId: "deleteStudent"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Student id to delete"
+        required: true
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Id"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Student not found"
+  /class/getStudentCount:
+    get:
+      tags:
+      - "class"
+      summary: "Gets students Count"
+      operationId: "getStudentsCount"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/class"
+        400:
+          description: "Unable to fetch Count"
+  /class/getAvgMarks:
+    get:
+      tags:
+      - "class"
+      summary: "Gets Average Marks of class"
+      operationId: "getAverageMarks"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/class"
+        400:
+          description: "Unable to fetch Average Marks"
+  /class/getMinMarks:
+    get:
+      tags:
+      - "class"
+      summary: "Gets Minimum Marks of class"
+      operationId: "getMinimumMarks"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/class"
+        400:
+          description: "Unable to fetch Minimum Marks"
+  /class/getMaxMarks:
+    get:
+      tags:
+      - "class"
+      summary: "Gets Maximum Marks of class"
+      operationId: "getMaximumMarks"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/class"
+        400:
+          description: "Unable to fetch Maximum Marks"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  student:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+        example: "Vijay"
+        description: "Allows underscore and dash in name"
+        maxLength: 255
+        pattern: "^[_A-z0-9]*((-|\\s)*[_A-z0-9])*$"
+      age:
+        type: "integer"
+        format: "int32"
+        minimum: 20
+        maximum: 99
+      marks:
+        type: "integer"
+        format: "int32"
+      status:
+        type: "string"
+        description: "student status in the class"
+        enum:
+        - "pass"
+        - "fail"
+    xml:
+      name: "Student"
+    example:
+      name: "Vijay"
+      id: 0
+      marks: 1
+      age: 67
+      status: "pass"
+  class:
+    type: "object"
+    properties:
+      studentCount:
+        type: "integer"
+        format: "int32"
+      avgMarks:
+        type: "integer"
+        format: "float"
+      minMarks:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+      maxMarks:
+        type: "integer"
+        format: "int32"
+        maximum: 100
+    xml:
+      name: "Class"
+    example:
+      studentCount: 0
+      minMarks: 0
+      avgMarks: 6
+      maxMarks: 59
